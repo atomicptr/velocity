@@ -7,16 +7,27 @@
    [org.httpkit.server :as hks]
    [reitit.ring :as reitit-ring]
    [ring.middleware.cookies :refer [wrap-cookies]]
+   [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+   [ring.middleware.multipart-params :refer [wrap-multipart-params]]
    [ring.middleware.params :refer [wrap-params]]
-   [ring.middleware.reload :refer [wrap-reload]])
+   [ring.middleware.reload :refer [wrap-reload]]
+   [ring.middleware.resource :refer [wrap-resource]]
+   [ring.middleware.session :refer [wrap-session]])
   (:gen-class))
 
 (def app
   (-> routes
       (reitit-ring/router)
       (reitit-ring/ring-handler)
+      (wrap-resource "public")
       (wrap-cookies)
-      (wrap-params {:encoding "UTF-8"})))
+      (wrap-session {:cookie-attrs {:max-age   (conf :security :session :max-age)
+                                    :same-site :strict
+                                    :secure    true
+                                    :http-only true}})
+      (wrap-keyword-params)
+      (wrap-params {:encoding "UTF-8"})
+      (wrap-multipart-params)))
 
 (defonce server (atom nil))
 

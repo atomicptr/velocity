@@ -6,7 +6,7 @@
       h/html
       str))
 
-(defn response [status body & headers]
+(defn response [status body & {:as headers}]
   {:status status :body (to-html body) :headers (merge {"Content-Type" "text/html"} headers)})
 
 (def ok (partial response 200))

@@ -1,8 +1,23 @@
-(ns app.views.layout)
+(ns app.views.layout
+  (:require
+   [app.config :refer [conf]]))
 
-(defn root [elems]
-  [:html [:head [:title "Hello, World!"]]
-   [:body [:main elems]]])
+(defn root [m elems]
+  [:html
+   [:head
+    [:title (if (get-in m [:title])
+              (str (:title m) " | " (conf :app :name))
+              (conf :app :name))]
+    [:link {:href "/out.css" :rel "stylesheet"}]]
+   [:body
+    [:main elems]
+    [:script {:src "https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"}]]])
 
-(defn app [elems]
-  (root elems))
+(defn base
+  ([elems] (base {} elems))
+  ([m elems] (root m elems)))
+
+(defn app
+  ([elems] (app {} elems))
+  ([m elems] (root m elems)))
+

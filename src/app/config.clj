@@ -5,17 +5,27 @@
    [app.database.core :as db]
    [clojure.string :refer [lower-case]]))
 
+(def default-key "super-secret-key-that-you-should-totally-change")
+
 (defonce default-config
-  {:env         :dev
-   :http        {:ip   "0.0.0.0"
-                 :port 3000}
-   :database    {:url (db/make-url {:dbtype "h2" :dbname "data/app"})}})
+  {:env      :dev
+   :app      {:name "Velocity"
+              :register-enabled? false}
+   :http     {:ip   "0.0.0.0"
+              :port 3000}
+   :security {:secret-key default-key
+              :session {:max-age 3600}}
+   :database {:url (db/make-url {:dbtype "sqlite" :dbname "data/app.db"})}})
 
 (defn- from-env! []
   (filter-nil-values
-   {:env  (env/get-map! "APP_ENV" lower-case keyword)
-    :http {:ip   (env/get!     "APP_IP")
-           :port (env/get-int! "APP_PORT")}}))
+   {:env      (env/get-map! "APP_ENV" lower-case keyword)
+    :app      {:name (env/get! "APP_NAME")
+               :register-enabled? (env/get-bool! "APP_REGISTER_ENABLED")}
+    :http     {:ip   (env/get!     "APP_IP")
+               :port (env/get-int! "APP_PORT")}
+    :security {:secret-key (env/get! "APP_SECRET")}
+    :database {:url (env/get! "DATABASE_URL")}}))
 
 (def config (deep-merge default-config (from-env!)))
 

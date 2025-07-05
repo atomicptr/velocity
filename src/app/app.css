@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+.center {
+    @apply flex justify-center items-center;
+}

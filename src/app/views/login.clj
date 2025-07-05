@@ -1,0 +1,83 @@
+(ns app.views.login
+  (:require
+   [app.config :refer [conf]]
+   [app.views.layout :as layout]))
+
+(defn- login-card
+  ([m elems] (login-card m elems nil))
+  ([m elems elems-under]
+   (layout/base
+    m
+    [:div.center.flex-col.gap-2.h-screen
+     [:div.card.bg-base-200
+      [:div.card-body elems]]
+     elems-under])))
+
+(defn- error-text [text]
+  (when text
+    [:p.text-error.text-xs text]))
+
+(defn- email-field [data]
+  [:label.floating-label
+   [:span "E-Mail"]
+   [:input.input.w-full {:name "email"
+                         :type "email"
+                         :class (when (:error data) "input-error")
+                         :value (:value data)}]
+   (error-text (:error data))])
+
+(defn- password-field [data]
+  [:label.floating-label
+   [:span (:title data)]
+   [:input.input.w-full {:name (:name data)
+                         :type "password"
+                         :class (when (:error data) "input-error")
+                         :value (:value data)}]
+   (error-text (:error data))])
+
+(defn- submit []
+  [:button.btn.btn-primary {:type "submit"} "Submit"])
+
+(defn login-form [data]
+  [:form {:hx-post "/login" :hx-swap "outerHTML"}
+   [:div.flex.flex-col.gap-4.mt-4
+    (email-field {:value (get-in data [:email :value])
+                  :error (get-in data [:email :error])})
+    (password-field {:title "Password"
+                     :name "password"
+                     :value (get-in data [:password :value])
+                     :error (get-in data [:password :error])})
+    (submit)]])
+
+(defn login []
+  (login-card
+   {:title "Login"}
+   [:div.flex.flex-col.gap-2.min-w-sm
+    [:h2.text-2xl "Login"]
+    [:div "Please log into your account."]
+    (login-form {})]
+   [:div
+    (when (conf :app :register-enabled?) [:a.btn.btn-ghost {:href "/register"} "Register"])]))
+
+(defn register-form [data]
+  [:form {:hx-post "/register" :hx-swap "outerHTML"}
+   [:div.flex.flex-col.gap-4.mt-4
+    (email-field {:value (get-in data [:email :value])
+                  :error (get-in data [:email :error])})
+    (password-field {:title "Password"
+                     :name "password"
+                     :value (get-in data [:password :value])
+                     :error (get-in data [:password :error])})
+    (password-field {:title "Confirm password"
+                     :name "confirm-password"
+                     :value (get-in data [:confirm-password :value])
+                     :error (get-in data [:confirm-password :error])})
+    (submit)]])
+
+(defn register []
+  (login-card
+   {:title "Register"}
+   [:div.flex.flex-col.gap-2.min-w-sm
+    [:h2.text-2xl "Register"]
+    [:div "Create a new account"]
+    (register-form {})]))
