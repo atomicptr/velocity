@@ -11,6 +11,10 @@
 (defn exists? [email]
   (not (nil? (userq/find-user-by-email @database {:email email}))))
 
+(defn verified? [email]
+  (let [user (userq/find-user-by-email @database {:email email})]
+    (not (nil? (:email_verified_at user)))))
+
 (defn create! [email password]
   (let [password (password/create-hash password)]
     (userq/insert-user! @database {:email email
@@ -39,3 +43,4 @@
 
 (defn verify-email! [email]
   (userq/verify-email! @database {:email email}))
+

@@ -1,12 +1,13 @@
 (ns app.controller.index
   (:require
-   [app.utils.html :as html]
-   [app.views.layout :as layout]
-   [ring.util.response :as response]))
+   [app.database.users :as users]
+   [app.utils.html :as html]))
 
 (defn index [req]
   (println (:cookies req))
   (println (:session req))
+
+  (println (users/verified? (get-in req [:session :user :email])))
 
   (let [session (:session req)
         count   (:count session 0)
