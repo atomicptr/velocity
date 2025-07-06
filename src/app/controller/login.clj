@@ -8,6 +8,7 @@
    [app.utils.password :as password]
    [app.utils.session :as session]
    [app.views.login :as view]
+   [clojure.pprint :refer [pprint]]
    [ring.util.response :refer [redirect]]))
 
 (defn login [_]
@@ -29,8 +30,8 @@
     (html/ok (view/register))))
 
 (defn submit-register [req]
-  (let [email (get-in req [:form-params "email"])
-        password (get-in req [:form-params "password"])
+  (let [email            (get-in req [:form-params "email"])
+        password         (get-in req [:form-params "password"])
         confirm-password (get-in req [:form-params "confirm-password"])]
     (cond
       (not (email/valid? email))
@@ -61,7 +62,27 @@
 (defn submit-reset-password [req]
   (let [email (get-in req [:form-params "email"])]
     (if (email/valid? email)
-      ; TODO: send reset email
-      (html/ok (view/reset-password-success email))
+      (do
+        (users/create-password-reset-request! email)
+        (html/ok (view/reset-password-success email)))
       (html/ok (view/reset-password-form {:email {:value email
                                                   :error "E-Mail is invalid"}})))))
+
+(defn reset-password-with-token [req]
+  (let [token (get-in req [:path-params :token])]
+    (if (users/reset-token-valid? token)
+      (html/ok (view/reset-password-with-token token))
+      (redirect "/login"))))
+
+(defn submit-reset-password-with-token [req]
+  (let [token            (get-in req [:path-params :token])
+        password         (get-in req [:form-params "password"])
+        confirm-password (get-in req [:form-params "confirm-password"])]
+    (cond
+      (not (= password confirm-password))
+      (html/ok (view/register-form {:confirm-password {:error "Password doesn't match"}}))
+      (not (password/valid? password))
+      (html/ok (view/register-form {:password {:error (password/reason password)}}))
+      :else (do (users/update-password! token password)
+                (htmx/redirect "/login")))))
+

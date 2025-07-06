@@ -2,11 +2,9 @@
   (:require
    [app.database.core :refer [database]]
    [app.database.query.sessions :as sessionq]
+   [app.utils.uuid :as uuid]
    [clojure.core :as core]
    [ring.middleware.session.store :refer [SessionStore]]))
-
-(defn- make-session-id []
-  (str (java.util.UUID/randomUUID)))
 
 (deftype DatabaseStore []
   SessionStore
@@ -19,7 +17,7 @@
           (core/read-string data)))))
 
   (write-session [_ k v]
-    (let [k          (or k (make-session-id))
+    (let [k          (or k (uuid/new))
           user-id    (get-in v [:user :id])
           ip         (get-in v [:ip])
           user-agent (get-in v [:user-agent])

@@ -9,13 +9,15 @@
   [["/" {:get (wrap-privileged index/index)}]
 
    ; login related
-   ["/login"          {:get (wrap-unprivileged login/login)
-                       :post (wrap-unprivileged login/submit-login)}]
-   ["/register"       {:get (wrap-unprivileged login/register)
-                       :post (wrap-unprivileged login/submit-register)}]
-   ["/logout"         {:get (wrap-privileged login/logout)}]
-   ["/reset-password" {:get (wrap-unprivileged login/reset-password)
-                       :post (wrap-unprivileged login/submit-reset-password)}]
+   ["/login"                 {:get (wrap-unprivileged login/login)
+                              :post (wrap-unprivileged login/submit-login)}]
+   ["/register"              {:get (wrap-unprivileged login/register)
+                              :post (wrap-unprivileged login/submit-register)}]
+   ["/logout"                {:get (wrap-privileged login/logout)}]
+   ["/reset-password"        {:get (wrap-unprivileged login/reset-password)
+                              :post (wrap-unprivileged login/submit-reset-password)}]
+   ["/reset-password/:token" {:get (wrap-unprivileged login/reset-password-with-token)
+                              :post (wrap-unprivileged login/submit-reset-password-with-token)}]
 
    ; misc
    ["/health/up" {:get health/up}]])

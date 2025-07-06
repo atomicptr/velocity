@@ -2,7 +2,8 @@
   (:require
    [app.database.core :refer [database]]
    [app.database.query.users :as userq]
-   [app.utils.password :as password]))
+   [app.utils.password :as password]
+   [app.utils.uuid :as uuid]))
 
 (defn exists? [email]
   (not (nil? (userq/find-user-by-email @database {:email email}))))
@@ -16,3 +17,17 @@
 (defn authenticate [email password]
   (let [user (userq/find-user-by-email @database {:email email})]
     (when (password/verify-hash password (:password user)) user)))
+
+(defn create-password-reset-request! [email]
+  (when (userq/find-user-by-email @database {:email email})
+    (let [token (uuid/new)]
+      (userq/upsert-reset-password-token! @database {:email email :token token})
+      ; TODO: send email
+      )))
+
+(defn reset-token-valid? [token]
+  (not (nil? (userq/find-password-reset-token @database {:token token}))))
+
+(defn update-password! [token password]
+  (userq/update-password-via-token! @database {:token token :password (password/create-hash password)})
+  (userq/delete-reset-token! @database {:token token}))
