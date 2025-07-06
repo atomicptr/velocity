@@ -2,8 +2,6 @@
   (:require
    [app.database.core :refer [database]]
    [app.database.query.sessions :as sessionq]
-   [app.database.query.users :as userq]
-   [app.utils.password :as password]
    [clojure.core :as core]
    [ring.middleware.session.store :refer [SessionStore]]))
 
@@ -36,16 +34,4 @@
       nil)))
 
 (defn make-store [] (DatabaseStore/new))
-
-(defn create [req user]
-  (when user
-    (merge (:session req) {:user {:id    (:id user)
-                                  :email (:email user)}})))
-
-(defn is-authenticated? [req]
-  (not (nil? (get-in req [:session :user :id]))))
-
-(defn authenticate [email password]
-  (let [user (userq/find-user-by-email @database {:email email})]
-    (when (password/verify-hash password (:password user)) user)))
 

@@ -13,3 +13,6 @@
                                   :password password})
     (userq/find-user-by-email @database {:email email})))
 
+(defn authenticate [email password]
+  (let [user (userq/find-user-by-email @database {:email email})]
+    (when (password/verify-hash password (:password user)) user)))

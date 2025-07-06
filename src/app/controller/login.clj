@@ -1,7 +1,7 @@
 (ns app.controller.login
   (:require
    [app.config :refer [conf]]
-   [app.database.session :as session]
+   [app.utils.session :as session]
    [app.database.users :as users]
    [app.utils.html :as html]
    [app.utils.htmx :as htmx]
@@ -18,7 +18,7 @@
   (assert (not (session/is-authenticated? req)))
   (let [email (get-in req [:form-params "email"])
         password (get-in req [:form-params "password"])]
-    (if-let [user (session/authenticate email password)]
+    (if-let [user (users/authenticate email password)]
       (let [session (session/create req user)]
         (-> (htmx/redirect "/")
             (assoc :session session)))
@@ -51,6 +51,7 @@
               (-> (htmx/redirect "/")
                   (assoc :session session))))))
 
-(defn logout [req]
-  (html/ok "OK"))
+(defn logout [_req]
+  (-> (redirect "/login")
+      (assoc :session nil)))
 

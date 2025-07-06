@@ -5,7 +5,7 @@
    [app.database.core :as db]
    [clojure.string :refer [lower-case]]))
 
-(def default-key "super-secret-key-that-you-should-totally-change")
+(def session-timeout 604800) ; 1 week
 
 (defonce default-config
   {:env      :dev
@@ -13,8 +13,7 @@
               :register-enabled? false}
    :http     {:ip   "0.0.0.0"
               :port 3000}
-   :security {:secret-key default-key
-              :session {:max-age 3600}}
+   :security {:session {:max-age 3600}}
    :database {:url (db/make-url {:dbtype "sqlite" :dbname "data/app.db"})}})
 
 (defn- from-env! []
