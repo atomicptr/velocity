@@ -23,3 +23,11 @@ create table sessions (
     created_at timestamp not null,
     updated_at timestamp not null
 );
+--;;
+create table email_queue (
+    id integer primary key autoincrement not null,
+    recipient varchar(255) not null,
+    subject varchar(255) not null,
+    body text not null,
+    created_at timestamp not null
+);

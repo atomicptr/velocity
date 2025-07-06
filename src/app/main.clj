@@ -27,8 +27,8 @@
                                     :same-site :strict
                                     :secure    true
                                     :http-only true}})
-      (wrap-params {:encoding "UTF-8"})
       (wrap-keyword-params)
+      (wrap-params {:encoding "UTF-8"})
       (wrap-multipart-params)))
 
 (defonce server (atom nil))

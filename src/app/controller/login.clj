@@ -1,14 +1,15 @@
 (ns app.controller.login
   (:require
    [app.config :refer [conf]]
+   [app.database.email-queue :as email-queue]
    [app.database.users :as users]
    [app.utils.email :as email]
    [app.utils.html :as html]
    [app.utils.htmx :as htmx]
    [app.utils.password :as password]
    [app.utils.session :as session]
+   [app.utils.url :as url]
    [app.views.login :as view]
-   [clojure.pprint :refer [pprint]]
    [ring.util.response :refer [redirect]]))
 
 (defn login [_]
@@ -48,7 +49,9 @@
                                                :error "User with this E-Mail address already exists"}}))
       :else (let [user (users/create! email password)
                   session (session/create req user)]
-              ; TODO: send email verification
+              ; TODO: create activation link
+              ; TODO: this shouldnt be here probably
+              (email-queue/send! email "Account registration" (str "Hello, you wanted to have an account right?" (url/absolute req (str "/activate/" (:id user)))))
               (-> (htmx/redirect "/")
                   (assoc :session session))))))
 
@@ -63,7 +66,7 @@
   (let [email (get-in req [:form-params "email"])]
     (if (email/valid? email)
       (do
-        (users/create-password-reset-request! email)
+        (users/create-password-reset-request! req email)
         (html/ok (view/reset-password-success email)))
       (html/ok (view/reset-password-form {:email {:value email
                                                   :error "E-Mail is invalid"}})))))
