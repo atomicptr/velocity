@@ -11,7 +11,8 @@
     [:link {:href "/out.css" :rel "stylesheet"}]]
    [:body
     [:main elems]
-    [:script {:src "https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"}]]])
+    [:script {:src "https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"}]
+    [:script {:src "https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"}]]])
 
 (defn base
   ([elems] (base {} elems))
