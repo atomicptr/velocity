@@ -10,8 +10,18 @@
 (defn is-authenticated? [req]
   (not (nil? (get-in req [:session :user :id]))))
 
-(defn wrap-privileged [fun]
+(defn wrap-privileged
+  "Only allow access to privileged users, redirect to /login otherwise"
+  [fun]
   (fn [req]
     (if (is-authenticated? req)
       (fun req)
       (redirect "/login"))))
+
+(defn wrap-unprivileged
+  "Only allow access to unprivileged users, redirect to / otherwise"
+  [fun]
+  (fn [req]
+    (if (not (is-authenticated? req))
+      (fun req)
+      (redirect "/"))))

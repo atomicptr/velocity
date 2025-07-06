@@ -3,17 +3,19 @@
    [app.controller.health :as health]
    [app.controller.index :as index]
    [app.controller.login :as login]
-   [app.utils.session :as session]))
+   [app.utils.session :refer [wrap-privileged wrap-unprivileged]]))
 
 (def routes
-  [["/" {:get (session/wrap-privileged index/index)}]
+  [["/" {:get (wrap-privileged index/index)}]
 
    ; login related
-   ["/login"    {:get login/login
-                 :post login/submit-login}]
-   ["/register" {:get login/register
-                 :post login/submit-register}]
-   ["/logout"   {:get (session/wrap-privileged login/logout)}]
+   ["/login"          {:get (wrap-unprivileged login/login)
+                       :post (wrap-unprivileged login/submit-login)}]
+   ["/register"       {:get (wrap-unprivileged login/register)
+                       :post (wrap-unprivileged login/submit-register)}]
+   ["/logout"         {:get (wrap-privileged login/logout)}]
+   ["/reset-password" {:get (wrap-unprivileged login/reset-password)
+                       :post (wrap-unprivileged login/submit-reset-password)}]
 
    ; misc
    ["/health/up" {:get health/up}]])

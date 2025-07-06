@@ -21,7 +21,7 @@
   (write-session [_ k v]
     (let [k (or k (make-session-id))
           user-id (get-in v [:user :id])]
-      (sessionq/update-session-data
+      (sessionq/upsert-session-data!
        @database
        {:session-id k
         :user-id user-id
@@ -30,7 +30,7 @@
 
   (delete-session [_ k]
     (when k
-      (sessionq/delete-session @database {:session-id k})
+      (sessionq/delete-session! @database {:session-id k})
       nil)))
 
 (defn make-store [] (DatabaseStore/new))

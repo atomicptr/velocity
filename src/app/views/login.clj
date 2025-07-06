@@ -56,8 +56,9 @@
     [:h2.text-2xl "Login"]
     [:div "Please log into your account."]
     (login-form {})]
-   [:div
-    (when (conf :app :register-enabled?) [:a.btn.btn-ghost {:href "/register"} "Register"])]))
+   [:div.flex.flex-row.gap-2
+    (when (conf :app :register-enabled?) [:a.btn.btn-ghost {:href "/register"} "Register"])
+    [:a.btn.btn-ghost {:href "/reset-password"} "Forgot password"]]))
 
 (defn register-form [data]
   [:form {:hx-post "/register" :hx-swap "outerHTML"}
@@ -81,3 +82,24 @@
     [:h2.text-2xl "Register"]
     [:div "Create a new account"]
     (register-form {})]))
+
+(defn reset-password-form [data]
+  [:form {:hx-post "/reset-password" :hx-swap "outerHTML"}
+   [:div.flex.flex-col.gap-4.mt-4
+    (email-field {:value (get-in data [:email :value])
+                  :error (get-in data [:email :error])})
+    (submit)]])
+
+(defn reset-password []
+  (login-card
+   {:title "Forgot password"}
+   [:div.flex.flex-col.gap-2.min-w-sm
+    [:h2.text-2xl "Forgot password"]
+    [:div {:hx-target "this"}
+     [:div "Send a reset link to your email"]
+     (reset-password-form {})]]
+   [:div.flex.flex-row.gap-2
+    [:a.btn.btn-ghost {:href "/login"} "Back to login"]]))
+
+(defn reset-password-success [email]
+  [:div "Send a reset E-Mail to " [:strong email] ", if there was an account associated with it"])

@@ -13,7 +13,7 @@
               :register-enabled? false}
    :http     {:ip   "0.0.0.0"
               :port 3000}
-   :security {:session {:max-age 3600}}
+   :security {:session {:timeout session-timeout}}
    :database {:url (db/make-url {:dbtype "sqlite" :dbname "data/app.db"})}})
 
 (defn- from-env! []
@@ -23,7 +23,7 @@
                :register-enabled? (env/get-bool! "APP_REGISTER_ENABLED")}
     :http     {:ip   (env/get!     "APP_IP")
                :port (env/get-int! "APP_PORT")}
-    :security {:secret-key (env/get! "APP_SECRET")}
+    :security {:session {:timeout (env/get-int! "APP_SESSION_TIMEOUT")}}
     :database {:url (env/get! "DATABASE_URL")}}))
 
 (def config (deep-merge default-config (from-env!)))

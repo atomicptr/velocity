@@ -23,12 +23,12 @@
       (wrap-resource "public")
       (wrap-cookies)
       (wrap-session {:store (session/make-store)
-                     :cookie-attrs {:max-age   (conf :security :session :max-age)
+                     :cookie-attrs {:max-age   (conf :security :session :timeout)
                                     :same-site :strict
                                     :secure    true
                                     :http-only true}})
-      (wrap-keyword-params)
       (wrap-params {:encoding "UTF-8"})
+      (wrap-keyword-params)
       (wrap-multipart-params)))
 
 (defonce server (atom nil))

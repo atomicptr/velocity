@@ -9,8 +9,8 @@
 
 (defn create! [email password]
   (let [password (password/create-hash password)]
-    (userq/insert-user @database {:email email
-                                  :password password})
+    (userq/insert-user! @database {:email email
+                                   :password password})
     (userq/find-user-by-email @database {:email email})))
 
 (defn authenticate [email password]
