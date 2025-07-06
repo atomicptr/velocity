@@ -3,9 +3,7 @@
    [app.database.core :refer [database]]
    [app.database.query.sessions :as sessionq]
    [app.database.query.users :as userq]
-   [app.utils.http :as http]
    [app.utils.password :as password]
-   [app.utils.time :as time]
    [clojure.core :as core]
    [ring.middleware.session.store :refer [SessionStore]]))
 
@@ -23,10 +21,12 @@
           (core/read-string data)))))
 
   (write-session [_ k v]
-    (let [k (or k (make-session-id))]
+    (let [k (or k (make-session-id))
+          user-id (get-in v [:user :id])]
       (sessionq/update-session-data
        @database
        {:session-id k
+        :user-id user-id
         :data (core/prn-str v)})
       k))
 

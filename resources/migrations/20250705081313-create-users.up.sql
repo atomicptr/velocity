@@ -16,6 +16,7 @@ create table password_reset_tokens (
 --;;
 create table sessions (
     session_id varchar(255) primary key not null,
+    user_id integer references users(id),
     data text,
     created_at timestamp not null,
     updated_at timestamp not null
