@@ -19,11 +19,7 @@
   (let [email (get-in req [:form-params "email"])
         password (get-in req [:form-params "password"])]
     (if-let [user (session/authenticate email password)]
-      (let [session-id (session/create! req user)
-            session (:session req)
-            session (merge session {:session-id session-id
-                                    :user {:id    (:id user)
-                                           :email (:email user)}})]
+      (let [session (session/create req user)]
         (-> (htmx/redirect "/")
             (assoc :session session)))
       (html/ok (view/login-form {:email {:value email
@@ -51,11 +47,7 @@
       (html/ok (view/register-form {:email    {:value email
                                                :error "User with this E-Mail address already exists"}}))
       :else (let [user (users/create! email password)
-                  session-id (session/create! req user)
-                  session (:session req)
-                  session (merge session {:session-id session-id
-                                          :user       {:id (:id user)
-                                                       :email (:email user)}})]
+                  session (session/create req user)]
               (-> (htmx/redirect "/")
                   (assoc :session session))))))
 

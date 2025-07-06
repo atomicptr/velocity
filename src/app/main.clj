@@ -12,7 +12,8 @@
    [ring.middleware.params :refer [wrap-params]]
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.resource :refer [wrap-resource]]
-   [ring.middleware.session :refer [wrap-session]])
+   [ring.middleware.session :refer [wrap-session]]
+   [app.database.session :as session])
   (:gen-class))
 
 (def app
@@ -21,7 +22,8 @@
       (reitit-ring/ring-handler)
       (wrap-resource "public")
       (wrap-cookies)
-      (wrap-session {:cookie-attrs {:max-age   (conf :security :session :max-age)
+      (wrap-session {:store (session/make-store)
+                     :cookie-attrs {:max-age   (conf :security :session :max-age)
                                     :same-site :strict
                                     :secure    true
                                     :http-only true}})

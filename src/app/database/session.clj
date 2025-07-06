@@ -1,30 +1,51 @@
 (ns app.database.session
   (:require
    [app.database.core :refer [database]]
-   [app.database.query.users :as user-query]
+   [app.database.query.sessions :as sessionq]
+   [app.database.query.users :as userq]
    [app.utils.http :as http]
    [app.utils.password :as password]
-   [app.utils.time :as time]))
-
-(defn authenticate [email password]
-  (let [user (user-query/find-user-by-email @database {:email email})]
-    (when (password/verify-hash password (:password user)) user)))
+   [app.utils.time :as time]
+   [clojure.core :as core]
+   [ring.middleware.session.store :refer [SessionStore]]))
 
 (defn- make-session-id []
   (str (java.util.UUID/randomUUID)))
 
-(defn create! [req user]
-  (let [t          (time/now)
-        session-id (make-session-id)]
-    (user-query/create-session @database {:session-id session-id
-                                          :user-id (:id user)
-                                          :ip (http/get-ip req)
-                                          :user-agent (http/user-agent req)
-                                          :last-activity t
-                                          :created-at t})
-    session-id))
+(deftype DatabaseStore []
+  SessionStore
+
+  (read-session [_ k]
+    (when k
+      (let [data (sessionq/get-session-data @database {:session-id k})
+            data (:data data)]
+        (when data
+          (core/read-string data)))))
+
+  (write-session [_ k v]
+    (let [k (or k (make-session-id))]
+      (sessionq/update-session-data
+       @database
+       {:session-id k
+        :data (core/prn-str v)})
+      k))
+
+  (delete-session [_ k]
+    (when k
+      (sessionq/delete-session @database {:session-id k})
+      nil)))
+
+(defn make-store [] (DatabaseStore/new))
+
+(defn create [req user]
+  (when user
+    (merge (:session req) {:user {:id    (:id user)
+                                  :email (:email user)}})))
 
 (defn is-authenticated? [req]
-  (if-let [session-id (get-in req [:session :session-id])]
-    (not (nil? (user-query/find-session @database {:session-id session-id})))
-    false))
+  (not (nil? (get-in req [:session :user :id]))))
+
+(defn authenticate [email password]
+  (let [user (userq/find-user-by-email @database {:email email})]
+    (when (password/verify-hash password (:password user)) user)))
+
