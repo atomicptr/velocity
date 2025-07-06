@@ -1,11 +1,14 @@
 (ns app.utils.session
   (:require
+   [app.utils.http :as http]
    [ring.util.response :refer [redirect]]))
 
 (defn create [req user]
   (when user
-    (merge (:session req) {:user {:id    (:id user)
-                                  :email (:email user)}})))
+    (merge (:session req) {:user       {:id    (:id user)
+                                        :email (:email user)}
+                           :ip         (http/get-ip req)
+                           :user-agent (http/user-agent req)})))
 
 (defn is-authenticated? [req]
   (not (nil? (get-in req [:session :user :id]))))

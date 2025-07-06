@@ -1,7 +1,13 @@
 -- :name upsert-session-data! :! :n
-insert into sessions (session_id, user_id, data, created_at, updated_at)
-values (:session-id, :user-id, :data, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-on conflict(session_id) do update set user_id=:user-id, data=:data, updated_at=CURRENT_TIMESTAMP
+insert into sessions (session_id, user_id, data, ip_address, user_agent, created_at, updated_at)
+values (:session-id, :user-id, :data, :ip, :user-agent, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+on conflict(session_id) do
+update set
+    user_id=:user-id,
+    data=:data,
+    ip_address=COALESCE(:ip, sessions.ip_address),
+    user_agent=COALESCE(:user-agent, sessions.user_agent),
+    updated_at=CURRENT_TIMESTAMP
 
 -- :name get-session-data :? :1
 select data from sessions where session_id = :session-id

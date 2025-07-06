@@ -19,13 +19,18 @@
           (core/read-string data)))))
 
   (write-session [_ k v]
-    (let [k (or k (make-session-id))
-          user-id (get-in v [:user :id])]
+    (let [k          (or k (make-session-id))
+          user-id    (get-in v [:user :id])
+          ip         (get-in v [:ip])
+          user-agent (get-in v [:user-agent])
+          value      (dissoc v :ip :user-agent)]
       (sessionq/upsert-session-data!
        @database
        {:session-id k
         :user-id user-id
-        :data (core/prn-str v)})
+        :ip ip
+        :user-agent user-agent
+        :data (core/prn-str value)})
       k))
 
   (delete-session [_ k]

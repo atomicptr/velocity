@@ -18,6 +18,8 @@ create table sessions (
     session_id varchar(255) primary key not null,
     user_id integer references users(id),
     data text,
+    ip_address varchar(45),
+    user_agent text,
     created_at timestamp not null,
     updated_at timestamp not null
 );
