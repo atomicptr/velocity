@@ -13,6 +13,7 @@
                               :post (wrap-unprivileged login/submit-login)}]
    ["/register"              {:get (wrap-unprivileged login/register)
                               :post (wrap-unprivileged login/submit-register)}]
+   ["/activate/:token"       {:get login/activate}]
    ["/logout"                {:get (wrap-privileged login/logout)}]
    ["/reset-password"        {:get (wrap-unprivileged login/reset-password)
                               :post (wrap-unprivileged login/submit-reset-password)}]

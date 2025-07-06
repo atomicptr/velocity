@@ -5,7 +5,8 @@
    [app.database.core :as db]
    [clojure.string :refer [lower-case]]))
 
-(def session-timeout 604800) ; 1 week
+(def ^:private default-secret "super-secret-key-that-you-should-change")
+(def ^:private session-timeout 604800) ; 1 week
 
 (defonce default-config
   {:env      :dev
@@ -13,7 +14,8 @@
               :register-enabled? false}
    :http     {:ip   "0.0.0.0"
               :port 3000}
-   :security {:session {:timeout session-timeout}}
+   :security {:secret default-secret
+              :session {:timeout session-timeout}}
    :database {:url (db/make-url {:dbtype "sqlite" :dbname "data/app.db"})}})
 
 (defn- from-env! []
@@ -23,7 +25,8 @@
                :register-enabled? (env/get-bool! "APP_REGISTER_ENABLED")}
     :http     {:ip   (env/get!     "APP_IP")
                :port (env/get-int! "APP_PORT")}
-    :security {:session {:timeout (env/get-int! "APP_SESSION_TIMEOUT")}}
+    :security {:secret (env/get!   "APP_SECRET")
+               :session {:timeout (env/get-int! "APP_SESSION_TIMEOUT")}}
     :database {:url (env/get! "DATABASE_URL")}}))
 
 (def config (deep-merge default-config (from-env!)))

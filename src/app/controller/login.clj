@@ -4,12 +4,15 @@
    [app.database.email-queue :as email-queue]
    [app.database.users :as users]
    [app.utils.email :as email]
+   [app.utils.hash :refer [sha3]]
    [app.utils.html :as html]
    [app.utils.htmx :as htmx]
    [app.utils.password :as password]
    [app.utils.session :as session]
    [app.utils.url :as url]
+   [app.views.email :as vemail]
    [app.views.login :as view]
+   [fipp.clojure :refer [pprint]]
    [ring.util.response :refer [redirect]]))
 
 (defn login [_]
@@ -30,6 +33,9 @@
     (redirect "/login")
     (html/ok (view/register))))
 
+(defn- activation-token [email]
+  (sha3 (str "activation-token" (conf :security :secret) email)))
+
 (defn submit-register [req]
   (let [email            (get-in req [:form-params "email"])
         password         (get-in req [:form-params "password"])
@@ -49,11 +55,19 @@
                                                :error "User with this E-Mail address already exists"}}))
       :else (let [user (users/create! email password)
                   session (session/create req user)]
-              ; TODO: create activation link
-              ; TODO: this shouldnt be here probably
-              (email-queue/send! email "Account registration" (str "Hello, you wanted to have an account right?" (url/absolute req (str "/activate/" (:id user)))))
+              (email-queue/send!
+               email
+               "Account registration"
+               (vemail/activation (url/absolute req (str "/activate/" (activation-token email) "?email=" email))))
               (-> (htmx/redirect "/")
                   (assoc :session session))))))
+
+(defn activate [req]
+  (let [token (get-in req [:path-params :token])
+        email (get-in req [:query-params "email"])]
+    (when (= token (activation-token email))
+      (users/verify-email! email))
+    (redirect "/login")))
 
 (defn logout [_req]
   (-> (redirect "/login")

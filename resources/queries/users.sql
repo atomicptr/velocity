@@ -19,3 +19,7 @@ where email in (select email from password_reset_tokens where token = :token)
 
 -- :name delete-reset-token! :! :n
 delete from password_reset_tokens where token = :token
+
+-- :name verify-email! :! :n
+update users set email_verified_at=CURRENT_TIMESTAMP
+where email = :email and email_verified_at is null

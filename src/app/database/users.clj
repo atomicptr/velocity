@@ -5,7 +5,8 @@
    [app.database.query.users :as userq]
    [app.utils.password :as password]
    [app.utils.url :as url]
-   [app.utils.uuid :as uuid]))
+   [app.utils.uuid :as uuid]
+   [app.views.email :as vemail]))
 
 (defn exists? [email]
   (not (nil? (userq/find-user-by-email @database {:email email}))))
@@ -24,7 +25,10 @@
   (when (userq/find-user-by-email @database {:email email})
     (let [token (uuid/new)]
       (userq/upsert-reset-password-token! @database {:email email :token token})
-      (email-queue/send! email "Reset password" (str "Hello, you wanted to reset your password right?" (url/absolute req (str "/reset-password/" token)))))))
+      (email-queue/send!
+       email
+       "Reset password"
+       (vemail/reset-password (url/absolute req (str "/reset-password/" token)))))))
 
 (defn reset-token-valid? [token]
   (not (nil? (userq/find-password-reset-token @database {:token token}))))
@@ -32,3 +36,6 @@
 (defn update-password! [token password]
   (userq/update-password-via-token! @database {:token token :password (password/create-hash password)})
   (userq/delete-reset-token! @database {:token token}))
+
+(defn verify-email! [email]
+  (userq/verify-email! @database {:email email}))
