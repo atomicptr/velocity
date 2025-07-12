@@ -7,6 +7,7 @@
    [app.routes :refer [routes]]
    [clojure.tools.logging :as log]
    [org.httpkit.server :as hks]
+   [prone.middleware :as prone]
    [reitit.ring :as reitit-ring]
    [ring.middleware.cookies :refer [wrap-cookies]]
    [ring.middleware.keyword-params :refer [wrap-keyword-params]]
@@ -47,7 +48,7 @@
   (reset! server
           (hks/run-server
            (if (= :dev (conf :env))
-             (wrap-reload #'app)
+             (prone/wrap-exceptions (wrap-reload #'app))
              app)
            {:ip   (conf :http :ip)
             :port (conf :http :port)

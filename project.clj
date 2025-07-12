@@ -16,6 +16,7 @@
                  [org.clojure/core.async                 "1.8.741"]
                  [org.clojure/tools.logging              "1.3.0"]
                  [org.xerial/sqlite-jdbc                 "3.50.2.0"]
+                 [prone/prone                            "2021-04-23"]
                  [ring/ring-core                         "1.14.2"]
                  [ring/ring-devel                        "1.14.2"]]
   :plugins      [[lein-ancient/lein-ancient              "1.0.0-RC3"]]
