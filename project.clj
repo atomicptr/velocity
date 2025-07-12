@@ -11,6 +11,7 @@
                  [http-kit/http-kit                      "2.8.0"]
                  [metosin/reitit                         "0.9.1"]
                  [migratus/migratus                      "1.6.4"]
+                 [org.clj-commons/digest                 "1.4.100"]
                  [org.clojure/clojure                    "1.12.1"]
                  [org.clojure/core.async                 "1.8.741"]
                  [org.clojure/tools.logging              "1.3.0"]

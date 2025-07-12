@@ -1,6 +1,9 @@
 (ns app.routes
   (:require
-   [app.auth.controller :as login]
+   [app.auth.controllers.login :as login]
+   [app.auth.controllers.profile :as profile]
+   [app.auth.controllers.register :as register]
+   [app.auth.controllers.reset-password :as reset-pw]
    [app.auth.domain.sessions :refer [wrap-privileged wrap-unprivileged]]
    [app.dashboard.controller :as dashboard]
    [app.health.controller :as health]))
@@ -8,17 +11,21 @@
 (def routes
   [["/"                      {:get (wrap-privileged dashboard/index)}]
 
-   ; login related
+   ; login
    ["/login"                 {:get (wrap-unprivileged login/login)
                               :post (wrap-unprivileged login/submit-login)}]
-   ["/register"              {:get (wrap-unprivileged login/register)
-                              :post (wrap-unprivileged login/submit-register)}]
-   ["/activate/:token"       {:get login/activate}]
    ["/logout"                {:get (wrap-privileged login/logout)}]
-   ["/reset-password"        {:get (wrap-unprivileged login/reset-password)
-                              :post (wrap-unprivileged login/submit-reset-password)}]
-   ["/reset-password/:token" {:get (wrap-unprivileged login/reset-password-with-token)
-                              :post (wrap-unprivileged login/submit-reset-password-with-token)}]
+   ; register
+   ["/register"              {:get (wrap-unprivileged register/register)
+                              :post (wrap-unprivileged register/submit-register)}]
+   ["/activate/:token"       {:get register/activate}]
+   ; pw reset
+   ["/reset-password"        {:get (wrap-unprivileged reset-pw/reset-password)
+                              :post (wrap-unprivileged reset-pw/submit-reset-password)}]
+   ["/reset-password/:token" {:get (wrap-unprivileged reset-pw/reset-password-with-token)
+                              :post (wrap-unprivileged reset-pw/submit-reset-password-with-token)}]
+   ; profile
+   ["/profile"               {:get (wrap-privileged profile/profile)}]
 
    ; misc
    ["/health/up"             {:get health/up}]])

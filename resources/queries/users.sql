@@ -1,3 +1,6 @@
+-- :name find-user-by-id :? :1
+select * from users where id = :id
+
 -- :name find-user-by-email :? :1
 select * from users where email = :email
 

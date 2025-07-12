@@ -1,6 +1,7 @@
 (ns app.core.view.layout
   (:require
-   [app.config :refer [conf]]))
+   [app.config :refer [conf]]
+   [app.core.view.components.navbar :refer [navbar]]))
 
 (defn root [m elems]
   [:html
@@ -20,5 +21,6 @@
 
 (defn app
   ([elems] (app {} elems))
-  ([m elems] (root m elems)))
+  ([m elems] (root m [:div (navbar [{:title "Dashboard" :link "/"}] (:user m))
+                      [:div.container.mx-auto elems]])))
 

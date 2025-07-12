@@ -6,7 +6,11 @@
    [app.core.utils.url :as url]
    [app.core.utils.uuid :as uuid]
    [app.core.view.email :as vemail]
-   [app.database :refer [database]]))
+   [app.database :refer [database]]
+   [clj-commons.digest :as digest]))
+
+(defn find-by-id [id]
+  (userq/find-user-by-id @database {:id id}))
 
 (defn find-by-email [email]
   (userq/find-user-by-email @database {:email email}))
@@ -47,3 +51,5 @@
 (defn verify-email! [email]
   (userq/verify-email! @database {:email email}))
 
+(defn gravatar [email]
+  (str "https://gravatar.com/avatar/" (digest/md5 email)))
