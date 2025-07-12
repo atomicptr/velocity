@@ -25,7 +25,7 @@
   (nil? (reason password)))
 
 (defn create-hash [password]
-  (.hash (Argon2Factory/create) (conf :password-hash :iterations) (conf :password-hash :memory) 1 password))
+  (.hash (Argon2Factory/create) (conf :security :password-hash :iterations) (conf :security :password-hash :memory) 1 password))
 
 (defn verify-hash [password hashed-password]
   (.verify (Argon2Factory/create) hashed-password password))

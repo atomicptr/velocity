@@ -16,14 +16,17 @@
   (emailq/fetch-emails @database {:limit limit}))
 
 (defn- send-email! [email]
-  (log/debug "sending message"
-             (:recipient email)
-             (:subject   email)
-             (send-message (conf :email :smtp)
-                           {:from    (conf :email :sender)
-                            :to      (:recipient email)
-                            :subject (:subject email)
-                            :body    (:body email)})))
+  (let [res (send-message
+             (conf :email :smtp)
+             {:from    (conf :email :sender)
+              :to      (:recipient email)
+              :subject (:subject email)
+              :body    (:body email)})]
+    (when (not= (:error res) :SUCCESS)
+      (log/error "could not sent message"
+                 {:recipient (:recipient email)
+                  :subject   (:subject   email)}
+                 res))))
 
 (defn remove! [id]
   (emailq/delete! @database {:id id}))
@@ -31,7 +34,7 @@
 (defonce ^:private email-scheduler (atom nil))
 
 (defn run-scheduler! [batch-size interval]
-  (log/info "running email scheduler... batch size:" batch-size "interval: " interval)
+  (log/info "running email scheduler with batch size:" batch-size "interval: " interval)
   (reset! email-scheduler (chan))
   (go-loop []
     (let [[_ ch] (alts! [(timeout interval) @email-scheduler])]
