@@ -14,6 +14,13 @@ create table password_reset_tokens (
     created_at timestamp
 );
 --;;
+create table email_change_request (
+    user_id integer primary key references users(id),
+    email varchar(255) not null,
+    token varchar(255) not null,
+    created_at timestamp
+);
+--;;
 create table sessions (
     session_id varchar(255) primary key not null,
     user_id integer references users(id),

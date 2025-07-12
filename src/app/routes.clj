@@ -27,6 +27,7 @@
    ; settings
    ["/settings"                     {:get  (wrap-privileged settings/settings)}]
    ["/settings/update-profile-info" {:post (wrap-privileged settings/update-profile-info)}]
+   ["/settings/update-email/:token" {:get  (wrap-privileged settings/update-email)}]
    ["/settings/update-password"     {:post (wrap-privileged settings/update-password)}]
 
    ; misc

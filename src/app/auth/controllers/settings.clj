@@ -1,17 +1,47 @@
 (ns app.auth.controllers.settings
   (:require
    [app.auth.domain.users :as users]
+   [app.auth.utils.email :as email]
    [app.auth.utils.password :as password]
    [app.auth.views.settings :as view]
-   [app.core.view.html :as html]))
+   [app.core.view.html :as html]
+   [ring.util.response :refer [redirect]]))
 
 (defn settings [req]
   (html/ok (view/settings (:user req))))
 
-(defn update-profile-info [req] nil)
+(defn update-profile-info [req]
+  (let [user  (:user req)
+        name  (get-in req [:form-params "name"])
+        email (get-in req [:form-params "email"])]
+    (cond
+      (not (email/valid? email))
+      (html/ok (view/profile-info-form {:name {:value name}
+                                        :email {:value email
+                                                :error "E-Mail is invalid"}}))
+      :else
+      (do
+        (when (not= name (:name user))
+          (users/update-name! user name))
+        (if (not= email (:email user))
+          (do (users/create-email-change-request! req email)
+              (html/ok (view/profile-info-form {:name  {:value name}
+                                                :email {:value email}
+                                                :message "A confirmation email has been sent to your new email address!"})))
+          (html/ok (view/profile-info-form {:name  {:value name}
+                                            :email {:value email}})))))))
+
+(defn update-email [req]
+  (let [user  (:user req)
+        token (get-in req [:path-params :token])
+        _     (assert (not (nil? token)))
+        chreq (users/find-email-change-request user token)]
+    (when chreq
+      (users/update-email! user (:email chreq))
+      (users/remove-email-change-request! user))
+    (redirect "/")))
 
 (defn update-password [req]
-
   (let [password             (get-in req [:form-params "password"])
         new-password         (get-in req [:form-params "new-password"])
         confirm-new-password (get-in req [:form-params "confirm-new-password"])]

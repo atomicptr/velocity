@@ -52,3 +52,35 @@
 
 (defn gravatar [email]
   (str "https://gravatar.com/avatar/" (digest/md5 email)))
+
+(defn update-name! [user name]
+  (assert (seq name))
+  (userq/update-name! @database {:user-id (:id user)
+                                 :name    name}))
+
+(defn update-email! [user new-email]
+  (assert (seq new-email))
+  (userq/update-email! @database {:user-id (:id user)
+                                  :email   new-email}))
+
+(defn create-email-change-request! [req new-email]
+  (let [user  (:user req)
+        token (uuid/new)]
+    (assert (not (nil? user)))
+    (userq/create-email-change-request!
+     @database
+     {:user-id (:id user)
+      :new-email   new-email
+      :token   token})
+    (email-queue/send!
+     new-email
+     "E-Mail Change Request"
+     (vemail/email-change-request (url/absolute req (str "/settings/update-email/" token))))))
+
+(defn find-email-change-request [user token]
+  (userq/find-email-change-request @database {:user-id (:id user)
+                                              :token   token}))
+
+(defn remove-email-change-request! [user]
+  (userq/delete-email-change-request! @database {:user-id (:id user)}))
+
