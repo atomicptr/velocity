@@ -14,8 +14,10 @@
               :register-enabled? false}
    :http     {:ip   "0.0.0.0"
               :port 3000}
-   :security {:secret default-secret
-              :session {:timeout session-timeout}}
+   :security {:secret        default-secret
+              :session       {:timeout session-timeout}
+              :password-hash {:iterations 10
+                              :memory     65536}}
    :database {:url (db/make-url {:dbtype "sqlite" :dbname "data/app.db"})}})
 
 (defn- from-env! []

@@ -1,5 +1,8 @@
 (ns app.auth.utils.password
-  (:import [de.mkammerer.argon2 Argon2Factory]))
+  (:require
+   [app.config :refer [conf]])
+  (:import
+   [de.mkammerer.argon2 Argon2Factory]))
 
 (defn- has-min-chars [minlen password]
   (>= (count password) minlen))
@@ -21,11 +24,8 @@
 (defn valid? [password]
   (nil? (reason password)))
 
-(def ^:private iterations 10)
-(def ^:private memory 65536)
-
 (defn create-hash [password]
-  (.hash (Argon2Factory/create) iterations memory 1 password))
+  (.hash (Argon2Factory/create) (conf :password-hash :iterations) (conf :password-hash :memory) 1 password))
 
 (defn verify-hash [password hashed-password]
   (.verify (Argon2Factory/create) hashed-password password))
