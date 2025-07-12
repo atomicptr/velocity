@@ -36,6 +36,6 @@
       (html/ok (view-register/register-form {:confirm-password {:error "Password doesn't match"}}))
       (not (password/valid? password))
       (html/ok (view-register/register-form {:password {:error (password/reason password)}}))
-      :else (do (users/update-password! token password)
+      :else (do (users/update-password-via-token! token password)
                 (htmx/redirect "/login")))))
 

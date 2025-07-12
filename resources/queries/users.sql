@@ -16,6 +16,11 @@ on conflict(email) do update set token=:token, created_at=CURRENT_TIMESTAMP
 -- :name find-password-reset-token :? :1
 select * from password_reset_tokens where token = :token
 
+-- :name update-password-via-id! :! :n
+update users
+set password = :password, updated_at = CURRENT_TIMESTAMP
+where id = :id
+
 -- :name update-password-via-token! :! :n
 update users set password = :password
 where email in (select email from password_reset_tokens where token = :token)

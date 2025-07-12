@@ -1,8 +1,8 @@
 (ns app.auth.views.login
   (:require
-   [app.auth.views.components :refer [email-field login-card password-field
-                                      submit]]
-   [app.config :refer [conf]]))
+   [app.auth.views.components :refer [login-card]]
+   [app.config :refer [conf]]
+   [app.core.view.components.form :refer [email-field password-field submit]]))
 
 (defn login-form [data]
   [:form {:hx-post "/login" :hx-swap "outerHTML"}

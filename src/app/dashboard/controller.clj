@@ -1,16 +1,7 @@
 (ns app.dashboard.controller
   (:require
-   [app.auth.domain.users :as users]
-   [app.core.view.html :as html]))
+   [app.core.view.html :as html]
+   [app.dashboard.view :as view]))
 
 (defn index [req]
-  (println (:cookies req))
-  (println (:session req))
-
-  (println (users/verified? (get-in req [:session :user :email])))
-
-  (let [session (:session req)
-        count   (:count session 0)
-        session (assoc session :count (inc count))]
-    (-> (html/ok [:h2 (str "You have accessed the page " count " times")])
-        (assoc :session session))))
+  (html/ok (view/dashboard (:user req))))

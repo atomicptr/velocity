@@ -7,17 +7,20 @@
   [:li [:a {:href (:link item)} (:title item)]])
 
 (defn navbar [items user]
-  [:div.navbar.bg-base-200.shadow-sm.sticky.top-0.mb-4.px-4
+  [:div.navbar.bg-base-200.shadow-sm.sticky.top-0.mb-12.px-4.z-50
+
    ; icon
    [:div.flex-none
     [:a.btn.btn-ghost.text-xl {:href "/"} (conf :app :name)]]
+
    ; center area
    [:div.flex-1.mx-2
     [:ul.menu.menu-horizontal.px-1
      (map create-items items)]]
+
    ; right area
-   [:div.flex-none
-    (when user
+   (when user
+     [:div.flex-none
       [:div.dropdown.dropdown-end
        [:div.btn.btn-ghost.btn-circle.avatar
         {:tabindex 0 :role "button"}
@@ -25,9 +28,9 @@
          [:img
           {:alt (:email user)
            :src (users/gravatar (:email user))}]]]
-       [:ul.menu.menu-sm.dropdown-content.bg-base-300.rounded-box.z-1.mt-3.w-52.p-2.shadow
+       [:ul.menu.menu-sm.dropdown-content.bg-base-300.rounded-box.mt-3.w-52.p-2.shadow
         {:tabindex 0}
         [:li
-         [:a {:href "/profile"} "Profile"]]
-        [:li [:a {:href "/logout"} "Logout"]]]])]])
+         [:a {:href "/settings"} "Settings"]]
+        [:li [:a {:href "/logout"} "Logout"]]]]])])
 

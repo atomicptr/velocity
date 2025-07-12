@@ -5,11 +5,11 @@
    [app.auth.domain.users :as users]
    [app.auth.utils.email :as email]
    [app.auth.utils.password :as password]
+   [app.auth.views.email :as vemail]
    [app.auth.views.register :as view]
    [app.config :refer [conf]]
    [app.core.utils.hash :refer [sha3]]
    [app.core.utils.url :as url]
-   [app.core.view.email :as vemail]
    [app.core.view.html :as html]
    [ring.util.response :refer [redirect]]))
 

@@ -1,7 +1,7 @@
 (ns app.auth.views.reset-password
   (:require
-   [app.auth.views.components :refer [email-field login-card password-field
-                                      submit]]))
+   [app.auth.views.components :refer [login-card]]
+   [app.core.view.components.form :refer [email-field password-field submit]]))
 
 (defn reset-password-form [data]
   [:form {:hx-post "/reset-password" :hx-swap "outerHTML"}

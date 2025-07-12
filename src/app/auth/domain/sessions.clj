@@ -1,5 +1,6 @@
 (ns app.auth.domain.sessions
   (:require
+   [app.auth.domain.users :as users]
    [app.auth.query.sessions :as sessionq]
    [app.core.utils.http :as http]
    [app.core.utils.uuid :as uuid]
@@ -55,7 +56,8 @@
   [fun]
   (fn [req]
     (if (is-authenticated? req)
-      (fun req)
+      ; TODO: if cant be found, remove session
+      (fun (assoc req :user (users/find-by-id (get-in req [:session :user :id]))))
       (redirect "/login"))))
 
 (defn wrap-unprivileged
