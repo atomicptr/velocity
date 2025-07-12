@@ -1,0 +1,6 @@
+/.clj-kondo
+/.git
+/.lsp
+/target
+/data
+/node_modules
