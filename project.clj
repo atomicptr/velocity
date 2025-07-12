@@ -17,6 +17,7 @@
                  [org.xerial/sqlite-jdbc                 "3.50.2.0"]
                  [ring/ring-core                         "1.14.2"]
                  [ring/ring-devel                        "1.14.2"]]
+  :plugins      [[lein-ancient/lein-ancient              "1.0.0-RC3"]]
   :main ^:skip-aot app.main
   :omit-source true
   :target-path "target/%s"
