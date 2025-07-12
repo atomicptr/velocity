@@ -1,4 +1,4 @@
-(ns app.utils.convert)
+(ns app.core.utils.convert)
 
 (defn str->int [str]
   (assert (string? str))

@@ -1,4 +1,4 @@
-(ns app.views.html
+(ns app.core.view.html
   (:require [hiccup2.core :as h]))
 
 (defn to-html [elems]

@@ -1,4 +1,4 @@
-(ns app.views.layout
+(ns app.core.view.layout
   (:require
    [app.config :refer [conf]]))
 

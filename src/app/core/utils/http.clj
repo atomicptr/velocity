@@ -1,4 +1,4 @@
-(ns app.utils.http
+(ns app.core.utils.http
   (:require
    [clojure.string :as string]))
 

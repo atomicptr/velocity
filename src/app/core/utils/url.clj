@@ -1,4 +1,4 @@
-(ns app.utils.url
+(ns app.core.utils.url
   (:require
    [ring.util.request :as request])
   (:import

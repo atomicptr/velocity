@@ -1,4 +1,4 @@
-(ns app.views.email)
+(ns app.core.view.email)
 
 (defn activation [url]
   (str "Please confirm your email by clicking on this link: " url))

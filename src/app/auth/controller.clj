@@ -7,11 +7,11 @@
    [app.auth.utils.password :as password]
    [app.auth.views :as view]
    [app.config :refer [conf]]
-   [app.utils.hash :refer [sha3]]
-   [app.utils.url :as url]
-   [app.views.email :as vemail]
-   [app.views.html :as html]
-   [app.views.htmx :as htmx]
+   [app.core.utils.hash :refer [sha3]]
+   [app.core.utils.url :as url]
+   [app.core.view.email :as vemail]
+   [app.core.view.html :as html]
+   [app.core.view.htmx :as htmx]
    [ring.util.response :refer [redirect]]))
 
 (defn login [_]

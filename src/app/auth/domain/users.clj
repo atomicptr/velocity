@@ -3,10 +3,10 @@
    [app.auth.domain.email-queue :as email-queue]
    [app.auth.query.users :as userq]
    [app.auth.utils.password :as password]
-   [app.database :refer [database]]
-   [app.utils.url :as url]
-   [app.utils.uuid :as uuid]
-   [app.views.email :as vemail]))
+   [app.core.utils.url :as url]
+   [app.core.utils.uuid :as uuid]
+   [app.core.view.email :as vemail]
+   [app.database :refer [database]]))
 
 (defn find-by-email [email]
   (userq/find-user-by-email @database {:email email}))

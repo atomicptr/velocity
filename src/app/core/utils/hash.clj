@@ -1,6 +1,6 @@
-(ns app.utils.hash
+(ns app.core.utils.hash
   (:require
-   [app.utils.convert :refer [bytes->hex]])
+   [app.core.utils.convert :refer [bytes->hex]])
   (:import
    [java.security MessageDigest]))
 

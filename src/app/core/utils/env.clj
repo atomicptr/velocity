@@ -1,6 +1,6 @@
-(ns app.utils.env
+(ns app.core.utils.env
   (:require
-   [app.utils.convert :refer [str->int]]
+   [app.core.utils.convert :refer [str->int]]
    [clojure.string :refer [lower-case]]))
 
 (defn get-map! [name fun & funcs]

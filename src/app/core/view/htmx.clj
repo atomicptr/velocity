@@ -1,4 +1,4 @@
-(ns app.views.htmx)
+(ns app.core.view.htmx)
 
 (defn response [status body & {:as headers}]
   {:status status :body body :headers headers})

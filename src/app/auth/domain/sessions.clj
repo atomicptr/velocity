@@ -1,9 +1,9 @@
 (ns app.auth.domain.sessions
   (:require
    [app.auth.query.sessions :as sessionq]
+   [app.core.utils.http :as http]
+   [app.core.utils.uuid :as uuid]
    [app.database :refer [database]]
-   [app.utils.http :as http]
-   [app.utils.uuid :as uuid]
    [clojure.core :as core]
    [ring.middleware.session.store :refer [SessionStore]]
    [ring.util.response :refer [redirect]]))

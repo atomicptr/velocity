@@ -1,7 +1,7 @@
 (ns app.dashboard.controller
   (:require
    [app.auth.domain.users :as users]
-   [app.views.html :as html]))
+   [app.core.view.html :as html]))
 
 (defn index [req]
   (println (:cookies req))

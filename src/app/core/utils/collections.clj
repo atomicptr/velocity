@@ -1,4 +1,4 @@
-(ns app.utils.collections)
+(ns app.core.utils.collections)
 
 (defn deep-merge [a & maps]
   (if (map? a)

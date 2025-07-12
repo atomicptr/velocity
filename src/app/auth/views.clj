@@ -1,7 +1,7 @@
 (ns app.auth.views
   (:require
    [app.config :refer [conf]]
-   [app.views.layout :as layout]))
+   [app.core.view.layout :as layout]))
 
 (defn- login-card
   ([m elems] (login-card m elems nil))

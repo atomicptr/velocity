@@ -1,8 +1,8 @@
 (ns app.config
   (:require
+   [app.core.utils.collections :refer [deep-merge filter-nil-values]]
+   [app.core.utils.env :as env]
    [app.database :as db]
-   [app.utils.collections :refer [deep-merge filter-nil-values]]
-   [app.utils.env :as env]
    [clojure.string :refer [lower-case]]))
 
 (def ^:private default-sender "velocity@atomicptr.dev")
