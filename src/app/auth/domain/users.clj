@@ -8,6 +8,9 @@
    [app.utils.uuid :as uuid]
    [app.views.email :as vemail]))
 
+(defn find-by-email [email]
+  (userq/find-user-by-email @database {:email email}))
+
 (defn exists? [email]
   (not (nil? (userq/find-user-by-email @database {:email email}))))
 

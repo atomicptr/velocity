@@ -21,9 +21,13 @@
   (let [email (get-in req [:form-params "email"])
         password (get-in req [:form-params "password"])]
     (if-let [user (users/authenticate email password)]
-      (let [session (sessions/create req user)]
-        (-> (htmx/redirect "/")
-            (assoc :session session)))
+      (if (not (nil? (:email_verified_at user)))
+        (let [session (sessions/create req user)]
+          (-> (htmx/redirect "/")
+              (assoc :session session)))
+        ; TODO: if enough time has passed since the last attempt, send another verification email
+        (html/ok (view/login-form {:email {:value email
+                                           :error "This account has not been verified yet, please check your emails"}})))
       (html/ok (view/login-form {:email {:value email
                                          :error "Could not log in, check email and/or password and try again"}})))))
 
@@ -52,21 +56,26 @@
       (users/exists? email)
       (html/ok (view/register-form {:email    {:value email
                                                :error "User with this E-Mail address already exists"}}))
-      :else (let [user (users/create! email password)
-                  session (sessions/create req user)]
-              (email-queue/send!
-               email
-               "Account registration"
-               (vemail/activation (url/absolute req (str "/activate/" (activation-token email) "?email=" email))))
-              (-> (htmx/redirect "/")
-                  (assoc :session session))))))
+      :else (do (users/create! email password)
+                (email-queue/send!
+                 email
+                 "Account registration"
+                 (vemail/activation (url/absolute req (str "/activate/" (activation-token email) "?email=" email))))
+                (html/ok (view/verify-email email))))))
 
 (defn activate [req]
   (let [token (get-in req [:path-params :token])
         email (get-in req [:query-params "email"])]
-    (when (= token (activation-token email))
-      (users/verify-email! email))
-    (redirect "/login")))
+    (if (= token (activation-token email))
+      (let [user (users/find-by-email email)]
+        (if (nil? (:email_verified_at user))
+          (do (users/verify-email! email)
+              (let [session (sessions/create req user)]
+                (-> (redirect "/")
+                    (assoc :session session))))
+          (redirect "/login")))
+
+      (redirect "/login"))))
 
 (defn logout [_req]
   (-> (redirect "/login")

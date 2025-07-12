@@ -125,3 +125,6 @@
     (reset-password-with-token-form token {})]
    [:div.flex.flex-row.gap-2
     [:a.btn.btn-ghost {:href "/login"} "Back to login"]]))
+
+(defn verify-email [email]
+  [:div "An email verification link has been sent to " [:strong email] ", please click on the link to verify your account"])
