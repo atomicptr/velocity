@@ -6,7 +6,8 @@ Velocity is an application starter kit for Clojure that provides the perfect sta
 
 - Application login, registration and email verification
 - Session management
-- Pretty Tailwind/DaisyUI powered interface
+- User settings page, with the ability to change name, email address and password
+- Pretty DaisyUI powered interface
 
 ## License
 
