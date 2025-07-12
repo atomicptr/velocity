@@ -1,5 +1,7 @@
 (ns app.auth.views.settings
   (:require
+   [app.core.utils.http :as http]
+   [app.core.utils.time :as time]
    [app.core.view.components.form :as form]
    [app.core.view.layout :as layout]))
 
@@ -35,7 +37,27 @@
     [:div.flex.flex-row.justify-end
      (form/submit)]]])
 
-(defn settings [user]
+(defn session [session-id session]
+  [:div.flex.flex-col.gap-2
+   [:div.text-md
+    (let [ua (http/parse-user-agent (:user_agent session))]
+      (str (:os ua) " - " (:browser ua)))
+    (when (= session-id (:session_id session))
+      [:span
+       [:span " - "]
+       [:span.text-success "This Device"]])]
+   [:div.text-xs.opacity-60.flex.flex-row.gap-1
+    [:span (:ip_address session)]
+    [:span " - " (time/ago (:updated_at session))]]])
+
+(defn session-manager [data]
+  [:div.flex.flex-col.gap-4 {:hx-target "this"}
+   (map (partial session (:session-id data)) (:sessions data))
+   (when (> (count (:sessions data)) 1)
+     [:div.flex.flex-row.justify-end
+      [:button.btn.btn-primary {:hx-post "/settings/purge-sessions"} "Logout other sessions"]])])
+
+(defn settings [user session-id sessions]
   (layout/app
    {:user user :title "Profile"}
    [:div.mx-2
@@ -57,5 +79,17 @@
       [:p "Ensure your account is using a long random password to stay secure"]]
      [:div.card.bg-base-200 {:class "sm:w-1/2"}
       [:div.card-body
-       (update-password-form {})]]]]))
+       (update-password-form {})]]]
+
+    [:hr.border-b-1.border-base-200.opacity-30.my-8]
+
+    ; sessions
+    [:div.flex.flex-col.sm:flex-row.gap-2.my-4
+     [:div.px-4 {:class "sm:w-1/2"}
+      [:h2.text-xl "Browser Sessions"]
+      [:p "Manage and logout sessions on other browsers and devices"]]
+     [:div.card.bg-base-200 {:class "sm:w-1/2"}
+      [:div.card-body
+       (session-manager {:session-id session-id
+                         :sessions   sessions})]]]]))
 

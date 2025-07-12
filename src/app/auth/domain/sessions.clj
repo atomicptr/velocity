@@ -67,3 +67,10 @@
     (if (not (is-authenticated? req))
       (fun req)
       (redirect "/"))))
+
+(defn find-sessions [user]
+  (sessionq/find-sessions @database {:user-id (:id user)}))
+
+(defn purge-other-sessions! [user session-id]
+  (sessionq/purge-other-sessions! @database {:user-id    (:id user)
+                                             :session-id session-id}))

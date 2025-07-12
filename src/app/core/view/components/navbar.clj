@@ -23,10 +23,12 @@
      [:div.flex-none
       [:div.dropdown.dropdown-end
        [:div.btn.btn-ghost.btn-circle.avatar
-        {:tabindex 0 :role "button"}
+        {:tabindex 0
+         :role "button"
+         :title (or (:name user) (:email user))}
         [:div.w-10.rounded-full
          [:img
-          {:alt (:email user)
+          {:alt (or (:name user) (:email user))
            :src (users/gravatar (:email user))}]]]
        [:ul.menu.menu-sm.dropdown-content.bg-base-300.rounded-box.mt-3.w-52.p-2.shadow
         {:tabindex 0}

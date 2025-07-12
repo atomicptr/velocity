@@ -2,6 +2,8 @@
 
 Velocity is an application starter kit for Clojure that provides the perfect starting point for your next project.
 
+Inspired by [Laravel Jetstream](https://jetstream.laravel.com/)
+
 ## Features
 
 - Application login, registration and email verification

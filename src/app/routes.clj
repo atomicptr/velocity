@@ -29,6 +29,7 @@
    ["/settings/update-profile-info" {:post (wrap-privileged settings/update-profile-info)}]
    ["/settings/update-email/:token" {:get  (wrap-privileged settings/update-email)}]
    ["/settings/update-password"     {:post (wrap-privileged settings/update-password)}]
+   ["/settings/purge-sessions"      {:post (wrap-privileged settings/purge-other-sessions)}]
 
    ; misc
    ["/health/up"             {:get health/up}]])

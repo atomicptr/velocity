@@ -14,3 +14,9 @@ select data from sessions where session_id = :session-id
 
 -- :name delete-session! :! :n
 delete from sessions where session_id = :session-id
+
+-- :name find-sessions :?
+select * from sessions where user_id = :user-id
+
+-- :name purge-other-sessions! :! :n
+delete from sessions where user_id = :user-id and session_id != :session-id

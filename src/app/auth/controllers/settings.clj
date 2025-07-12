@@ -1,5 +1,6 @@
 (ns app.auth.controllers.settings
   (:require
+   [app.auth.domain.sessions :as sessions]
    [app.auth.domain.users :as users]
    [app.auth.utils.email :as email]
    [app.auth.utils.password :as password]
@@ -8,7 +9,9 @@
    [ring.util.response :refer [redirect]]))
 
 (defn settings [req]
-  (html/ok (view/settings (:user req))))
+  (let [user (:user req)
+        session-id (get-in req [:cookies "ring-session" :value])]
+    (html/ok (view/settings user session-id (sessions/find-sessions user)))))
 
 (defn update-profile-info [req]
   (let [user  (:user req)
@@ -19,6 +22,7 @@
       (html/ok (view/profile-info-form {:name {:value name}
                                         :email {:value email
                                                 :error "E-Mail is invalid"}}))
+
       :else
       (do
         (when (not= name (:name user))
@@ -58,3 +62,9 @@
       :else (do (users/update-password-via-id! (get-in req [:user :id]) new-password)
                 (html/ok (view/update-password-form {:message "Your password has been successfully updated!"}))))))
 
+(defn purge-other-sessions [req]
+  (let [user (:user req)
+        session-id (get-in req [:cookies "ring-session" :value])]
+    (sessions/purge-other-sessions! user session-id)
+    (html/ok (view/session-manager {:session-id session-id
+                                    :sessions (sessions/find-sessions user)}))))
