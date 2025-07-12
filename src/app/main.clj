@@ -1,7 +1,7 @@
 (ns app.main
   (:require
    [app.config :refer [conf]]
-   [app.database.core :as db]
+   [app.database :as db]
    [app.routes :refer [routes]]
    [clojure.tools.logging :as log]
    [org.httpkit.server :as hks]
@@ -13,7 +13,7 @@
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.resource :refer [wrap-resource]]
    [ring.middleware.session :refer [wrap-session]]
-   [app.database.session :as session])
+   [app.auth.domain.sessions :as sessions])
   (:gen-class))
 
 (def app
@@ -22,7 +22,7 @@
       (reitit-ring/ring-handler)
       (wrap-resource "public")
       (wrap-cookies)
-      (wrap-session {:store (session/make-store)
+      (wrap-session {:store (sessions/make-store)
                      :cookie-attrs {:max-age   (conf :security :session :timeout)
                                     :same-site :strict
                                     :secure    true

@@ -1,4 +1,4 @@
-(ns app.database.query.users
+(ns app.auth.query.users
   (:require
    [hugsql.core :as hugsql]))
 

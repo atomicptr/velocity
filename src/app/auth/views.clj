@@ -1,4 +1,4 @@
-(ns app.views.login
+(ns app.auth.views
   (:require
    [app.config :refer [conf]]
    [app.views.layout :as layout]))

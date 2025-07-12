@@ -1,4 +1,4 @@
-(ns app.utils.password
+(ns app.auth.utils.password
   (:import [de.mkammerer.argon2 Argon2Factory]))
 
 (defn- has-min-chars [minlen password]

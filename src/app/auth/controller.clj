@@ -1,18 +1,17 @@
-(ns app.controller.login
+(ns app.auth.controller
   (:require
+   [app.auth.domain.email-queue :as email-queue]
+   [app.auth.domain.sessions :as sessions]
+   [app.auth.domain.users :as users]
+   [app.auth.utils.email :as email]
+   [app.auth.utils.password :as password]
+   [app.auth.views :as view]
    [app.config :refer [conf]]
-   [app.database.email-queue :as email-queue]
-   [app.database.users :as users]
-   [app.utils.email :as email]
    [app.utils.hash :refer [sha3]]
-   [app.utils.html :as html]
-   [app.utils.htmx :as htmx]
-   [app.utils.password :as password]
-   [app.utils.session :as session]
    [app.utils.url :as url]
    [app.views.email :as vemail]
-   [app.views.login :as view]
-   [fipp.clojure :refer [pprint]]
+   [app.views.html :as html]
+   [app.views.htmx :as htmx]
    [ring.util.response :refer [redirect]]))
 
 (defn login [_]
@@ -22,7 +21,7 @@
   (let [email (get-in req [:form-params "email"])
         password (get-in req [:form-params "password"])]
     (if-let [user (users/authenticate email password)]
-      (let [session (session/create req user)]
+      (let [session (sessions/create req user)]
         (-> (htmx/redirect "/")
             (assoc :session session)))
       (html/ok (view/login-form {:email {:value email
@@ -54,7 +53,7 @@
       (html/ok (view/register-form {:email    {:value email
                                                :error "User with this E-Mail address already exists"}}))
       :else (let [user (users/create! email password)
-                  session (session/create req user)]
+                  session (sessions/create req user)]
               (email-queue/send!
                email
                "Account registration"

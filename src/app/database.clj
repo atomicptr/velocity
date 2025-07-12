@@ -1,4 +1,4 @@
-(ns app.database.core
+(ns app.database
   (:require
    [clojure.tools.logging :as log]
    [hugsql.adapter.next-jdbc :as next-adapter]

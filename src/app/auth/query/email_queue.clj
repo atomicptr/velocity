@@ -1,4 +1,4 @@
-(ns app.database.query.email-queue
+(ns app.auth.query.email-queue
   (:require
    [hugsql.core :as hugsql]))
 

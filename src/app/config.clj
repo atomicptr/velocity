@@ -1,8 +1,8 @@
 (ns app.config
   (:require
+   [app.database :as db]
    [app.utils.collections :refer [deep-merge filter-nil-values]]
    [app.utils.env :as env]
-   [app.database.core :as db]
    [clojure.string :refer [lower-case]]))
 
 (def ^:private default-secret "super-secret-key-that-you-should-change")

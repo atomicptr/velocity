@@ -1,7 +1,7 @@
-(ns app.database.email-queue
+(ns app.auth.domain.email-queue
   (:require
-   [app.database.core :refer [database]]
-   [app.database.query.email-queue :as emailq]))
+   [app.auth.query.email-queue :as emailq]
+   [app.database :refer [database]]))
 
 (defn send! [recipient subject body]
   (emailq/insert-email! @database {:recipient recipient

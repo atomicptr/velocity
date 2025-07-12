@@ -1,12 +1,12 @@
 (ns app.routes
   (:require
-   [app.controller.health :as health]
-   [app.controller.index :as index]
-   [app.controller.login :as login]
-   [app.utils.session :refer [wrap-privileged wrap-unprivileged]]))
+   [app.auth.controller :as login]
+   [app.auth.domain.sessions :refer [wrap-privileged wrap-unprivileged]]
+   [app.dashboard.controller :as dashboard]
+   [app.health.controller :as health]))
 
 (def routes
-  [["/" {:get (wrap-privileged index/index)}]
+  [["/"                      {:get (wrap-privileged dashboard/index)}]
 
    ; login related
    ["/login"                 {:get (wrap-unprivileged login/login)
@@ -21,4 +21,4 @@
                               :post (wrap-unprivileged login/submit-reset-password-with-token)}]
 
    ; misc
-   ["/health/up" {:get health/up}]])
+   ["/health/up"             {:get health/up}]])

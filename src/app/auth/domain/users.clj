@@ -1,9 +1,9 @@
-(ns app.database.users
+(ns app.auth.domain.users
   (:require
-   [app.database.core :refer [database]]
-   [app.database.email-queue :as email-queue]
-   [app.database.query.users :as userq]
-   [app.utils.password :as password]
+   [app.auth.domain.email-queue :as email-queue]
+   [app.auth.query.users :as userq]
+   [app.auth.utils.password :as password]
+   [app.database :refer [database]]
    [app.utils.url :as url]
    [app.utils.uuid :as uuid]
    [app.views.email :as vemail]))
