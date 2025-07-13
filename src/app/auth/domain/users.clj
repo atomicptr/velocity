@@ -4,6 +4,7 @@
    [app.auth.query.users :as userq]
    [app.auth.utils.password :as password]
    [app.auth.views.email :as vemail]
+   [app.config :refer [conf]]
    [app.core.utils.url :as url]
    [app.core.utils.uuid :as uuid]
    [app.database :refer [database]]
@@ -84,3 +85,8 @@
 (defn remove-email-change-request! [user]
   (userq/delete-email-change-request! @database {:user-id (:id user)}))
 
+(defn clean-password-reset-tokens-scheduler! []
+  (userq/clean-password-reset-tokens! @database {:older-than-secs (conf :cleanup :forgot-password-requests-older-than)}))
+
+(defn clean-email-change-requests-scheduler! []
+  (userq/clean-email-change-requests! @database {:older-than-secs (conf :cleanup :email-change-requests-older-than)}))

@@ -3,7 +3,6 @@
    [app.auth.query.email-queue :as emailq]
    [app.config :refer [conf]]
    [app.database :refer [database]]
-   [clojure.core.async :refer [alts! chan close! go-loop timeout]]
    [clojure.tools.logging :as log]
    [postal.core :refer [send-message]]))
 

@@ -48,3 +48,9 @@ select * from email_change_request where user_id = :user-id and token = :token
 
 -- :name delete-email-change-request! :! :n
 delete from email_change_request where user_id = :user-id
+
+-- :name clean-email-change-requests! :! :n
+delete from email_change_request where created_at <= DATETIME(CURRENT_TIMESTAMP, '-' || :older-than-secs || ' seconds')
+
+-- :name clean-password-reset-tokens! :! :n
+delete from password_reset_tokens where created_at <= DATETIME(CURRENT_TIMESTAMP, '-' || :older-than-secs || ' seconds')

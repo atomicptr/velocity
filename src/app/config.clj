@@ -28,7 +28,9 @@
                                   :port       587
                                   :tls        true}
               :queue             {:batch-size 100}}
-   :scheduler {:tick-rate        60}})
+   :scheduler {:tick-rate        300}
+   :cleanup                      {:forgot-password-requests-older-than 3600
+                                  :email-change-requests-older-than    3600}})
 
 (defn- from-env! []
   (filter-nil-values
