@@ -1,15 +1,21 @@
 (ns app.scheduler
   (:require
    [app.auth.domain.email-queue :as email-queue]
+   [app.auth.domain.sessions :as sessions]
    [app.auth.domain.users :as users]
    [app.config :refer [conf]]
-   [clojure.core.async :refer [close! alts! chan go-loop timeout]]
+   [clojure.core.async :refer [alts!
+                               chan
+                               close!
+                               go-loop
+                               timeout]]
    [clojure.tools.logging :as log]))
 
 (defonce ^:private jobs
   [email-queue/scheduler-tick!
    users/clean-email-change-requests-scheduler!
-   users/clean-password-reset-tokens-scheduler!])
+   users/clean-password-reset-tokens-scheduler!
+   sessions/clean-old-sessions-scheduler!])
 
 (defonce ^:private scheduler (atom nil))
 

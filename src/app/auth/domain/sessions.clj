@@ -2,6 +2,7 @@
   (:require
    [app.auth.domain.users :as users]
    [app.auth.query.sessions :as sessionq]
+   [app.config :refer [conf]]
    [app.core.utils.http :as http]
    [app.core.utils.uuid :as uuid]
    [app.database :refer [database]]
@@ -74,3 +75,6 @@
 (defn purge-other-sessions! [user session-id]
   (sessionq/purge-other-sessions! @database {:user-id    (:id user)
                                              :session-id session-id}))
+
+(defn clean-old-sessions-scheduler! []
+  (sessionq/clean-old-sessions! @database {:older-than-secs (conf :security :session :timeout)}))

@@ -20,3 +20,6 @@ select * from sessions where user_id = :user-id
 
 -- :name purge-other-sessions! :! :n
 delete from sessions where user_id = :user-id and session_id != :session-id
+
+-- :name clean-old-sessions! :! :n
+delete from sessions where created_at <= DATETIME(CURRENT_TIMESTAMP, '-' || :older-than-secs || ' seconds')
