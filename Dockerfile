@@ -17,8 +17,12 @@ WORKDIR /app/data
 WORKDIR /app
 
 ENV APP_ENV="prod"
+ENV APP_PORT="80"
 ENV DATABASE_URL="jdbc:sqlite:/app/data/app.db"
 
 COPY --from=builder /app/app.jar /app/app.jar
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl --fail http://localhost/health/up || exit 1
 
 CMD ["java", "-jar", "/app/app.jar"]
