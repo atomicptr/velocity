@@ -1,7 +1,10 @@
-(ns app.core.utils.time)
+(ns app.core.utils.time
+  (:import
+   [java.util TimeZone]))
 
 (defn ago [datetime-str]
   (let [fmt (java.text.SimpleDateFormat. "yyyy-MM-dd HH:mm:ss")
+        _ (.setTimeZone fmt (TimeZone/getTimeZone "UTC"))
         date (.parse fmt datetime-str)
         now (java.util.Date.)
         diff (- (.getTime now) (.getTime date))
