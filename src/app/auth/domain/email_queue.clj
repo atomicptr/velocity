@@ -31,25 +31,10 @@
 (defn remove! [id]
   (emailq/delete! @database {:id id}))
 
-(defonce ^:private email-scheduler (atom nil))
+(defn scheduler-tick! []
+  (let [emails (fetch (conf :email :queue :batch-size))]
+    (doseq [email emails]
+      (send-email! email)
+      ; assuming send-email! didnt throw, remove it from queue
+      (remove! (:id email)))))
 
-(defn run-scheduler! [batch-size interval]
-  (log/info "running email scheduler with batch size:" batch-size "interval: " interval)
-  (reset! email-scheduler (chan))
-  (go-loop []
-    (let [[_ ch] (alts! [(timeout interval) @email-scheduler])]
-      (when-not (= ch @email-scheduler)
-        (try
-          (let [emails (fetch batch-size)]
-            (doseq [email emails]
-              (send-email! email)
-              ; assuming send-email! didnt throw, remove it from queue
-              (remove! (:id email))))
-          (catch Exception e
-            (log/error "email queue: " (.getMessage e))))
-        (recur)))))
-
-(defn stop-scheduler! []
-  (when-let [ch @email-scheduler]
-    (close! ch)
-    (reset! email-scheduler nil)))
