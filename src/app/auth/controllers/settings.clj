@@ -5,7 +5,7 @@
    [app.auth.utils.email :as email]
    [app.auth.utils.password :as password]
    [app.auth.views.settings :as view]
-   [app.core.view.html :as html]
+   [app.core.responder.html :as html]
    [ring.util.response :refer [redirect]]))
 
 (defn settings [req]

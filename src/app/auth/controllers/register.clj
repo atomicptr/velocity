@@ -10,7 +10,7 @@
    [app.config :refer [conf]]
    [app.core.utils.hash :refer [sha3]]
    [app.core.utils.url :as url]
-   [app.core.view.html :as html]
+   [app.core.responder.html :as html]
    [ring.util.response :refer [redirect]]))
 
 (defn register [_]

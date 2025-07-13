@@ -5,8 +5,8 @@
    [app.auth.utils.password :as password]
    [app.auth.views.register :as view-register]
    [app.auth.views.reset-password :as view]
-   [app.core.view.html :as html]
-   [app.core.view.htmx :as htmx]
+   [app.core.responder.html :as html]
+   [app.core.responder.htmx :as htmx]
    [ring.util.response :refer [redirect]]))
 
 (defn reset-password [_]

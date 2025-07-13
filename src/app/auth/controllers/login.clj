@@ -3,8 +3,8 @@
    [app.auth.domain.sessions :as sessions]
    [app.auth.domain.users :as users]
    [app.auth.views.login :as view]
-   [app.core.view.html :as html]
-   [app.core.view.htmx :as htmx]
+   [app.core.responder.html :as html]
+   [app.core.responder.htmx :as htmx]
    [ring.util.response :refer [redirect]]))
 
 (defn login [_]
