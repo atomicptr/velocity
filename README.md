@@ -4,13 +4,19 @@ Velocity is an application starter kit for Clojure that provides the perfect sta
 
 Inspired by [Laravel Jetstream](https://jetstream.laravel.com/)
 
+Powered by [Clojure](https://clojure.org), [HTMX](https://htmx.org) and [DaisyUI](https://daisyui.com)
+
 ## Features
 
 - Application login, registration and email verification
-- Session management
 - User settings page, with the ability to change name, email address and password
+- Session management
 - Pretty DaisyUI powered interface
-- Easy deployment via Docker
+- Easy deployment via Docker or Uberjar
+
+![](./.github/dashboard.png)
+
+![](./.github/settings.png)
 
 ## Deploy
 
@@ -29,6 +35,9 @@ $ docker run --rm -p 3000:3000 -v ./data:/app/data -e APP_REGISTER_ENABLED=true 
 ### Uberjar
 
 ```bash
+# build css
+$ npm run build
+
 # just build the uberjar using leiningen
 $ lein uberjar
 
