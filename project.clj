@@ -4,8 +4,6 @@
   :license {:name "MIT" :url "https://opensource.org/license/mit"}
   :dependencies [[com.draines/postal                     "2.0.5"]
                  [com.github.seancorfield/next.jdbc      "1.3.1048"]
-                 [com.layerware/hugsql                   "0.5.3"]
-                 [com.layerware/hugsql-adapter-next-jdbc "0.5.3"]
                  [de.mkammerer/argon2-jvm                "2.12"]
                  [hiccup/hiccup                          "2.0.0"]
                  [http-kit/http-kit                      "2.8.0"]

@@ -33,7 +33,8 @@
                                                 :email {:value email}
                                                 :message "A confirmation email has been sent to your new email address!"})))
           (html/ok (view/profile-info-form {:name  {:value name}
-                                            :email {:value email}})))))))
+                                            :email {:value email}
+                                            :message "Name updated successfully"})))))))
 
 (defn update-email [req]
   (let [user  (:user req)

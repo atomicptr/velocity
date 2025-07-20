@@ -1,18 +1,19 @@
 (ns app.auth.domain.email-queue
   (:require
-   [app.auth.query.email-queue :as emailq]
    [app.config :refer [conf]]
-   [app.database :refer [database]]
+   [app.database :refer [exec!]]
    [clojure.tools.logging :as log]
    [postal.core :refer [send-message]]))
 
 (defn send! [recipient subject body]
-  (emailq/insert-email! @database {:recipient recipient
-                                   :subject   subject
-                                   :body      body}))
+  (exec! ["insert into email_queue (recipient, subject, body, created_at)
+           values (?, ?, ?, CURRENT_TIMESTAMP)"
+          recipient
+          subject
+          body]))
 
 (defn fetch [limit]
-  (emailq/fetch-emails @database {:limit limit}))
+  (exec! ["select * from email_queue order by created_at asc limit ?" limit]))
 
 (defn- send-email! [email]
   (let [res (send-message
@@ -28,7 +29,7 @@
                  res))))
 
 (defn remove! [id]
-  (emailq/delete! @database {:id id}))
+  (exec! ["delete from email_queue where id = ?" id]))
 
 (defn scheduler-tick! []
   (let [emails (fetch (conf :email :queue :batch-size))]

@@ -1,46 +1,39 @@
 (ns app.auth.domain.sessions
   (:require
    [app.auth.domain.users :as users]
-   [app.auth.query.sessions :as sessionq]
    [app.config :refer [conf]]
    [app.core.utils.http :as http]
    [app.core.utils.uuid :as uuid]
-   [app.database :refer [database]]
+   [app.database :refer [exec!]]
    [clojure.core :as core]
    [ring.middleware.session.store :refer [SessionStore]]
    [ring.util.response :refer [redirect]]))
 
-(deftype DatabaseStore []
-  SessionStore
+(defn get-session-data [session-id]
+  (first (exec! ["select data from sessions where session_id = ?" session-id])))
 
-  (read-session [_ k]
-    (when k
-      (let [data (sessionq/get-session-data @database {:session-id k})
-            data (:data data)]
-        (when data
-          (core/read-string data)))))
+(defn upsert-session-data! [session-id user-id ip user-agent data]
+  (exec! ["insert into sessions (session_id, user_id, data, ip_address, user_agent, created_at, updated_at)
+          values (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+          on conflict(session_id) do
+          update set
+              user_id=?,
+              data=?,
+              ip_address=COALESCE(?, sessions.ip_address),
+              user_agent=COALESCE(?, sessions.user_agent),
+              updated_at=CURRENT_TIMESTAMP"
+          session-id
+          user-id
+          data
+          ip
+          user-agent
+          user-id
+          data
+          ip
+          user-agent]))
 
-  (write-session [_ k v]
-    (let [k          (or k (uuid/new))
-          user-id    (get-in v [:user :id])
-          ip         (get-in v [:ip])
-          user-agent (get-in v [:user-agent])
-          value      (dissoc v :ip :user-agent)]
-      (sessionq/upsert-session-data!
-       @database
-       {:session-id k
-        :user-id user-id
-        :ip ip
-        :user-agent user-agent
-        :data (core/prn-str value)})
-      k))
-
-  (delete-session [_ k]
-    (when k
-      (sessionq/delete-session! @database {:session-id k})
-      nil)))
-
-(defn make-store [] (DatabaseStore/new))
+(defn delete-session! [session-id]
+  (exec! ["delete from sessions where session_id = ?" session-id]))
 
 (defn create [req user]
   (when user
@@ -70,11 +63,12 @@
       (redirect "/"))))
 
 (defn find-sessions [user]
-  (sessionq/find-sessions @database {:user-id (:id user)}))
+  (exec! ["select * from sessions where user_id = ?" (:id user)]))
 
 (defn purge-other-sessions! [user session-id]
-  (sessionq/purge-other-sessions! @database {:user-id    (:id user)
-                                             :session-id session-id}))
+  (exec! ["delete from sessions where user_id = ? and session_id != ?" (:id user) session-id]))
 
 (defn clean-old-sessions-scheduler! []
-  (sessionq/clean-old-sessions! @database {:older-than-secs (conf :security :session :timeout)}))
+  (let [threshold (conf :security :session :timeout)
+        threshold-str (str "-" threshold " seconds")]
+    (exec! ["delete from sessions where created_at <= DATETIME(CURRENT_TIMESTAMP, ?)" threshold-str])))

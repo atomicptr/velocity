@@ -1,11 +1,10 @@
 (ns app.database
   (:require
    [clojure.tools.logging :as log]
-   [hugsql.adapter.next-jdbc :as next-adapter]
-   [hugsql.core :as hugsql]
    [migratus.core :as migratus]
    [next.jdbc :as jdbc]
-   [next.jdbc.connection :refer [jdbc-url]]))
+   [next.jdbc.connection :refer [jdbc-url]]
+   [next.jdbc.result-set :as rs]))
 
 (defonce database (atom nil))
 (defonce spec (atom nil))
@@ -35,7 +34,8 @@
 
 (defn init! [url]
   (reset! spec {:jdbcUrl url})
-  (hugsql/set-adapter! (next-adapter/hugsql-adapter-next-jdbc))
   (run-migrations!)
   (connect!))
 
+(defn exec! [query]
+  (jdbc/execute! @database query {:builder-fn rs/as-unqualified-lower-maps})); TODO: switch to unqualified kebab maps

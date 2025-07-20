@@ -1,6 +1,6 @@
 (ns app.main
   (:require
-   [app.auth.domain.sessions :as sessions]
+   [app.auth.database-store :as database-store]
    [app.config :refer [conf]]
    [app.database :as db]
    [app.routes :refer [routes]]
@@ -24,7 +24,7 @@
       (reitit-ring/ring-handler)
       (wrap-resource "public")
       (wrap-cookies)
-      (wrap-session {:store (sessions/make-store)
+      (wrap-session {:store (database-store/make-store)
                      :cookie-attrs {:max-age   (conf :security :session :timeout)
                                     :same-site :strict
                                     :secure    true
