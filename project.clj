@@ -13,7 +13,7 @@
                  [org.clj-commons/digest                 "1.4.100"]
                  [org.clojure/clojure                    "1.12.1"]
                  [org.clojure/core.async                 "1.8.741"]
-                 [org.xerial/sqlite-jdbc                 "3.50.2.0"]
+                 [org.xerial/sqlite-jdbc                 "3.50.3.0"]
                  [prone/prone                            "2021-04-23"]
                  [ring/ring-core                         "1.14.2"]
                  [ring/ring-devel                        "1.14.2"]]
