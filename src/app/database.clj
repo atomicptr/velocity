@@ -14,13 +14,17 @@
 
 (defn- make-migratus-config []
   (assert (not (nil? @spec)))
-  {:store          :database
-   :migrations-dir "migrations"
-   :db             @spec})
+  {:store                :database
+   :migrations-dir       "migrations"
+   :init-script          "init.sql"
+   :init-in-transaction? false
+   :db                   @spec})
 
 (defn- run-migrations! []
   (log/info "Running Migrations")
-  (let [result (migratus/migrate (make-migratus-config))]
+  (let [config (make-migratus-config)
+        _      (migratus/init config)
+        result (migratus/migrate config)]
     (if (and (map? result)
              (contains? result :error))
       (throw (ex-info "Migration failed: " result))
