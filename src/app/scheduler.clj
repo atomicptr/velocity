@@ -9,7 +9,7 @@
                                close!
                                go-loop
                                timeout]]
-   [clojure.tools.logging :as log]))
+   [taoensso.timbre :as log]))
 
 (defonce ^:private jobs
   [email-queue/scheduler-tick!

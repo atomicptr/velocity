@@ -29,27 +29,29 @@
                                   :tls        true}
               :queue             {:batch-size 100}}
    :scheduler {:tick-rate        300}
+   :logging                      {:min-level :info}
    :cleanup                      {:forgot-password-requests-older-than 3600
                                   :email-change-requests-older-than    3600}})
 
 (defn- from-env! []
   (filter-nil-values
    {:env       (env/get-map! "APP_ENV" lower-case keyword)
-    :app       {:name                 (env/get!      "APP_NAME")
-                :register-enabled?    (env/get-bool! "APP_REGISTER_ENABLED")}
-    :http      {:ip                   (env/get!      "APP_IP")
-                :port                 (env/get-int!  "APP_PORT")}
-    :security  {:secret               (env/get!      "APP_SECRET")
-                :session {:timeout    (env/get-int!  "APP_SESSION_TIMEOUT")}}
-    :database  {:url                  (env/get!      "DATABASE_URL")}
-    :email     {:sender               (env/get!      "APP_SENDER_EMAIL")
-                :smtp    {:host       (env/get!      "SMTP_HOST")
-                          :user       (env/get!      "SMTP_USER")
-                          :pass       (env/get!      "SMTP_PASSWORD")
-                          :port       (env/get-int!  "SMTP_PORT")
-                          :tls        (env/get-bool! "SMTP_USE_TLS")}
-                :queue   {:batch-size (env/get-int!  "EMAIL_BATCH_SIZE")}}
-    :scheduler {:tick-rate            (env/get-int!  "SCHEDULER_TICK_RATE")}}))
+    :app       {:name                 (env/get!        "APP_NAME")
+                :register-enabled?    (env/get-bool!   "APP_REGISTER_ENABLED")}
+    :http      {:ip                   (env/get!        "APP_IP")
+                :port                 (env/get-int!    "APP_PORT")}
+    :security  {:secret               (env/get!        "APP_SECRET")
+                :session {:timeout    (env/get-int!    "APP_SESSION_TIMEOUT")}}
+    :database  {:url                  (env/get!        "DATABASE_URL")}
+    :email     {:sender               (env/get!        "APP_SENDER_EMAIL")
+                :smtp    {:host       (env/get!        "SMTP_HOST")
+                          :user       (env/get!        "SMTP_USER")
+                          :pass       (env/get!        "SMTP_PASSWORD")
+                          :port       (env/get-int!    "SMTP_PORT")
+                          :tls        (env/get-bool!   "SMTP_USE_TLS")}
+                :queue   {:batch-size (env/get-int!    "EMAIL_BATCH_SIZE")}}
+    :logging             {:min-level  (env/get-keyword "APP_LOG_LEVEL")}
+    :scheduler {:tick-rate            (env/get-int!    "SCHEDULER_TICK_RATE")}}))
 
 (def config (deep-merge default-config (from-env!)))
 

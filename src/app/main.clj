@@ -5,7 +5,6 @@
    [app.database :as db]
    [app.routes :refer [routes]]
    [app.scheduler :refer [run-scheduler! stop-scheduler!]]
-   [clojure.tools.logging :as log]
    [org.httpkit.server :as hks]
    [prone.middleware :as prone]
    [reitit.ring :as reitit-ring]
@@ -15,7 +14,8 @@
    [ring.middleware.params :refer [wrap-params]]
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.resource :refer [wrap-resource]]
-   [ring.middleware.session :refer [wrap-session]])
+   [ring.middleware.session :refer [wrap-session]]
+   [taoensso.timbre :as log])
   (:gen-class))
 
 (def app
@@ -41,6 +41,9 @@
     (@server :timeout 100)))
 
 (defn start! []
+  (log/set-min-level! (conf :logging :min-level))
+  (log/info "Welcome to Velocity!")
+  (log/info "Checkout: https://github.com/atomicptr/velocity")
   (db/init! (conf :database :url))
   (run-scheduler! (conf :scheduler :tick-rate))
   (log/info "starting server at port... " (conf :http :port) "in env" (conf :env))

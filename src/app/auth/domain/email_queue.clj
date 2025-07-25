@@ -2,8 +2,8 @@
   (:require
    [app.config :refer [conf]]
    [app.database :refer [exec!]]
-   [clojure.tools.logging :as log]
-   [postal.core :refer [send-message]]))
+   [postal.core :refer [send-message]]
+   [taoensso.timbre :as log]))
 
 (defn send! [recipient subject body]
   (exec! ["insert into email_queue (recipient, subject, body, created_at)

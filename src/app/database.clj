@@ -1,10 +1,10 @@
 (ns app.database
   (:require
-   [clojure.tools.logging :as log]
    [migratus.core :as migratus]
    [next.jdbc :as jdbc]
    [next.jdbc.connection :refer [jdbc-url]]
-   [next.jdbc.result-set :as rs]))
+   [next.jdbc.result-set :as rs]
+   [taoensso.timbre :as log]))
 
 (defonce database (atom nil))
 (defonce spec (atom nil))

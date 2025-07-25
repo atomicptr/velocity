@@ -11,6 +11,9 @@
 (defn get! [name]
   (System/getenv name))
 
+(defn get-keyword [name]
+  (keyword (get! name)))
+
 (defn get-int! [name]
   (get-map! name str->int))
 
