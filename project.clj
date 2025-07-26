@@ -21,6 +21,5 @@
   :main ^:skip-aot app.main
   :omit-source true
   :target-path "target/%s"
-  :jvm-opts ["-Djava.util.logging.config.file=resources/logging.properties"]
   :profiles {:uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}})
